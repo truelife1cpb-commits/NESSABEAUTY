@@ -1,0 +1,219 @@
+<script>
+  /**
+   * Client-side Controller for NESSABEAUTY (NSB) Web App
+   * Interacts with Code.gs via google.script.run
+   */
+  var NSB = (function() {
+    var state = {
+      activeSection: 'dashboard',
+      user: null
+    };
+
+    function init() {
+      showSection('dashboard');
+    }
+
+    function showSection(sectionId) {
+      state.activeSection = sectionId;
+      var stage = document.getElementById('main-stage');
+
+      // Update sidebar active buttons
+      var btns = document.querySelectorAll('.nav-btn');
+      btns.forEach(function(b) { b.classList.remove('active'); });
+
+      if (sectionId === 'dashboard') {
+        stage.innerHTML = renderDashboardHTML();
+      } else if (sectionId === 'registration') {
+        stage.innerHTML = renderRegistrationHTML();
+      } else if (sectionId === 'verify') {
+        stage.innerHTML = renderVerifyHTML();
+      } else if (sectionId === 'financials') {
+        stage.innerHTML = renderFinancialsHTML();
+      } else if (sectionId === 'attendance') {
+        stage.innerHTML = renderAttendanceHTML();
+      } else if (sectionId === 'certificates') {
+        stage.innerHTML = renderCertificatesHTML();
+      } else if (sectionId === 'whatsapp') {
+        stage.innerHTML = renderWhatsAppHTML();
+      } else if (sectionId === 'settings') {
+        stage.innerHTML = renderSettingsHTML();
+      } else {
+        stage.innerHTML = '<div class="card"><h3>' + sectionId.toUpperCase() + ' Module Active</h3><p>Connected to Google Sheets 24-table backend.</p></div>';
+      }
+    }
+
+    function renderDashboardHTML() {
+      return '' +
+        '<div class="card">' +
+          '<h2 style="font-family:serif; color:#fef3c7; font-size:20px; margin-bottom:4px;">NESSABEAUTY Executive Control Center</h2>' +
+          '<p style="font-size:12px; color:#a8a29e; margin-bottom:16px;">Active Cohort: January 15, 2027 – February 11, 2027 • 24 Sheets Connected</p>' +
+          '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">' +
+            '<div style="background:#0c0a09; padding:16px; border-radius:12px; border:1px solid #292524;">' +
+              '<div style="font-size:10px; color:#a8a29e; text-transform:uppercase;">Program Fee</div>' +
+              '<div style="font-size:22px; font-weight:bold; color:#34d399; font-family:monospace;">$150 USD</div>' +
+              '<div style="font-size:10px; color:#78716c;">$50 Registration + $100 Kit</div>' +
+            '</div>' +
+            '<div style="background:#0c0a09; padding:16px; border-radius:12px; border:1px solid #292524;">' +
+              '<div style="font-size:10px; color:#a8a29e; text-transform:uppercase;">Attendance Min</div>' +
+              '<div style="font-size:22px; font-weight:bold; color:#fbbf24; font-family:monospace;">80% Req</div>' +
+              '<div style="font-size:10px; color:#78716c;">Certification Threshold</div>' +
+            '</div>' +
+            '<div style="background:#0c0a09; padding:16px; border-radius:12px; border:1px solid #292524;">' +
+              '<div style="font-size:10px; color:#a8a29e; text-transform:uppercase;">Active Courses</div>' +
+              '<div style="font-size:22px; font-weight:bold; color:#fff; font-family:monospace;">3 Tracks</div>' +
+              '<div style="font-size:10px; color:#78716c;">Wig, Hairstyling, Makeup</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    function renderRegistrationHTML() {
+      return '' +
+        '<div class="card">' +
+          '<h3 style="font-family:serif; color:#fef3c7; font-size:18px; margin-bottom:8px;">Online Candidate Application Form</h3>' +
+          '<p style="font-size:12px; color:#a8a29e; margin-bottom:16px;">Direct registration to Google Sheets database.</p>' +
+          '<form id="gas-reg-form" onsubmit="NSB.handleRegSubmit(event)">' +
+            '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">' +
+              '<div><label style="font-size:11px; color:#a8a29e;">Full Legal Name *</label><input type="text" id="reg-name" required placeholder="e.g. Amara Diallo"></div>' +
+              '<div><label style="font-size:11px; color:#a8a29e;">Email Address *</label><input type="email" id="reg-email" required placeholder="candidate@example.com"></div>' +
+              '<div><label style="font-size:11px; color:#a8a29e;">Phone (WhatsApp) *</label><input type="tel" id="reg-phone" required placeholder="+1 555 019 2831"></div>' +
+              '<div><label style="font-size:11px; color:#a8a29e;">Course Specialization</label>' +
+                '<select id="reg-course">' +
+                  '<option value="CRS-WIG-01">Professional Wig Installation & Frontal Customization ($150)</option>' +
+                  '<option value="CRS-HAIR-02">Advanced Bridal & Creative Hairstyling ($150)</option>' +
+                  '<option value="CRS-MKP-03">Master Makeup Artistry & Beauty Glamour ($150)</option>' +
+                '</select>' +
+              '</div>' +
+            '</div>' +
+            '<button type="submit" class="btn btn-primary" style="width:100%; margin-top:8px;">Submit Online Registration</button>' +
+          '</form>' +
+          '<div id="reg-result" style="margin-top:12px; font-size:12px;"></div>' +
+        '</div>';
+    }
+
+    function handleRegSubmit(e) {
+      e.preventDefault();
+      var resultDiv = document.getElementById('reg-result');
+      resultDiv.innerHTML = '<span style="color:#fbbf24;">Submitting registration to Google Sheets backend...</span>';
+
+      var data = {
+        fullName: document.getElementById('reg-name').value,
+        email: document.getElementById('reg-email').value,
+        phone: document.getElementById('reg-phone').value,
+        courseId: document.getElementById('reg-course').value
+      };
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res.success) {
+              resultDiv.innerHTML = '<span style="color:#34d399; font-weight:bold;">Success! Registered Candidate ID: ' + res.candidateId + '</span>';
+            } else {
+              resultDiv.innerHTML = '<span style="color:#f43f5e;">Error: ' + res.error + '</span>';
+            }
+          })
+          .withFailureHandler(function(err) {
+            resultDiv.innerHTML = '<span style="color:#f43f5e;">Server Error: ' + err.toString() + '</span>';
+          })
+          .submitCandidateRegistration(data);
+      } else {
+        resultDiv.innerHTML = '<span style="color:#34d399;">[Local Mode Simulated] Candidate registered successfully.</span>';
+      }
+    }
+
+    function renderVerifyHTML() {
+      return '' +
+        '<div class="card">' +
+          '<h3 style="font-family:serif; color:#fef3c7; font-size:18px; margin-bottom:8px;">Public Certificate & Receipt Verification</h3>' +
+          '<p style="font-size:12px; color:#a8a29e; margin-bottom:16px;">Verify credentials issued by NESSABEAUTY without exposing personal student addresses.</p>' +
+          '<div style="display:flex; gap:8px; margin-bottom:12px;">' +
+            '<input type="text" id="verify-query" placeholder="Enter Certificate # or Verification Code (e.g. NSB-CERT-2027-001)" style="flex:1;">' +
+            '<button onclick="NSB.doVerify()" class="btn btn-primary">Verify Record</button>' +
+          '</div>' +
+          '<div id="verify-result" style="margin-top:12px; font-size:12px;"></div>' +
+        '</div>';
+    }
+
+    function doVerify() {
+      var query = document.getElementById('verify-query').value.trim();
+      var resDiv = document.getElementById('verify-result');
+      if (!query) return;
+
+      resDiv.innerHTML = '<span style="color:#fbbf24;">Querying Google Sheets registry...</span>';
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res.found) {
+              resDiv.innerHTML = '<div style="background:#0c0a09; padding:12px; border-radius:8px; border:1px solid #059669;">' +
+                '<div style="color:#34d399; font-weight:bold;">VALID AUTHENTIC CREDENTIAL</div>' +
+                '<div>Candidate: ' + res.candidateName + '</div>' +
+                '<div>Course: ' + (res.courseTitle || res.courseName) + '</div>' +
+                '<div>Status: ' + res.status + '</div>' +
+              '</div>';
+            } else {
+              resDiv.innerHTML = '<span style="color:#f43f5e;">Record not found.</span>';
+            }
+          })
+          .verifyPublicRecord(query, 'certificate');
+      } else {
+        resDiv.innerHTML = '<span style="color:#34d399;">[Local Mode] Valid Certificate found: Amara Diallo (Professional Wig Installation).</span>';
+      }
+    }
+
+    function renderWhatsAppHTML() {
+      return '' +
+        '<div class="card">' +
+          '<h3 style="font-family:serif; color:#fef3c7; font-size:18px; margin-bottom:8px;">WhatsApp Direct Dispatch</h3>' +
+          '<p style="font-size:12px; color:#a8a29e; margin-bottom:16px;">Opens WhatsApp click-to-chat with formatted message without requiring WhatsApp API.</p>' +
+          '<div style="display:grid; gap:12px; margin-bottom:12px;">' +
+            '<input type="tel" id="wa-phone" placeholder="Candidate Phone with country code (e.g. 15557893245)">' +
+            '<textarea id="wa-text" rows="4">Hello from NESSABEAUTY! We are pleased to confirm your upcoming class schedule for the January 2027 Wig Installation Cohort.</textarea>' +
+            '<button onclick="NSB.sendWhatsApp()" class="btn btn-primary" style="background:#059669;">Open WhatsApp Chat</button>' +
+          '</div>' +
+        '</div>';
+    }
+
+    function sendWhatsApp() {
+      var phone = document.getElementById('wa-phone').value.replace(/[^0-9]/g, '');
+      var text = encodeURIComponent(document.getElementById('wa-text').value);
+      if (!phone) { alert('Please enter phone number'); return; }
+      window.open('https://wa.me/' + phone + '?text=' + text, '_blank');
+    }
+
+    function renderSettingsHTML() {
+      return '' +
+        '<div class="card">' +
+          '<h3 style="font-family:serif; color:#fef3c7; font-size:18px; margin-bottom:8px;">Database Setup & Sheet Architecture</h3>' +
+          '<p style="font-size:12px; color:#a8a29e; margin-bottom:16px;">Verify or re-initialize all 24 sheets in your Google Spreadsheet.</p>' +
+          '<button onclick="NSB.runInitDatabase()" class="btn btn-primary">Initialize 24 Sheets Database</button>' +
+          '<div id="init-res" style="margin-top:12px; font-size:12px;"></div>' +
+        '</div>';
+    }
+
+    function runInitDatabase() {
+      var resDiv = document.getElementById('init-res');
+      resDiv.innerHTML = '<span style="color:#fbbf24;">Initializing 24 sheets...</span>';
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            resDiv.innerHTML = '<span style="color:#34d399; font-weight:bold;">' + res.message + '</span>';
+          })
+          .initializeDatabase();
+      } else {
+        resDiv.innerHTML = '<span style="color:#34d399;">[Local Mode] 24 Sheets initialized.</span>';
+      }
+    }
+
+    return {
+      init: init,
+      showSection: showSection,
+      handleRegSubmit: handleRegSubmit,
+      doVerify: doVerify,
+      sendWhatsApp: sendWhatsApp,
+      runInitDatabase: runInitDatabase
+    };
+  })();
+
+  window.addEventListener('DOMContentLoaded', NSB.init);
+</script>

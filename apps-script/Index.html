@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><?= appName ?> - Management System</title>
+  <?!= include('Styles'); ?>
+</head>
+<body class="bg-stone-950 text-stone-100 font-sans antialiased">
+  <!-- Main Header -->
+  <header class="header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="logo-circle">NSB</div>
+        <div>
+          <div class="brand-title">NESSABEAUTY <span class="badge">NSB</span></div>
+          <div class="brand-slogan"><?= slogan ?></div>
+        </div>
+      </div>
+      <div class="user-bar">
+        <span id="current-user-badge">Super Admin</span>
+        <button class="btn btn-secondary" onclick="NSB.showSection('registration')">Public Form</button>
+        <button class="btn btn-secondary" onclick="NSB.showSection('verify')">Verify</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- App Body Layout -->
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="nav-group">Academy Management</div>
+      <button class="nav-btn active" onclick="NSB.showSection('dashboard')">Dashboard</button>
+      <button class="nav-btn" onclick="NSB.showSection('candidates')">Admissions & Candidates</button>
+      <button class="nav-btn" onclick="NSB.showSection('courses')">Courses & Cohorts</button>
+      <button class="nav-btn" onclick="NSB.showSection('attendance')">Attendance Roll Call</button>
+      <button class="nav-btn" onclick="NSB.showSection('grades')">Grades & Assessments</button>
+      <button class="nav-btn" onclick="NSB.showSection('certificates')">Certificate Center</button>
+      <button class="nav-btn" onclick="NSB.showSection('financials')">Payments & Receipts</button>
+      <button class="nav-btn" onclick="NSB.showSection('expenses')">Accounting & Expenses</button>
+      <button class="nav-btn" onclick="NSB.showSection('inventory')">Salon Inventory</button>
+      <button class="nav-btn" onclick="NSB.showSection('whatsapp')">WhatsApp Communications</button>
+      <button class="nav-btn" onclick="NSB.showSection('settings')">Settings & Schema</button>
+    </nav>
+
+    <!-- Main Content Stage -->
+    <main class="main-content" id="main-stage">
+      <div class="card p-6">
+        <h2>Loading NESSABEAUTY Platform...</h2>
+        <p>Connecting to Google Sheets backend via google.script.run</p>
+      </div>
+    </main>
+  </div>
+
+  <?!= include('JavaScript'); ?>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administration Console - NESSABEAUTY (NSB)</title>
+  <?!= include('Styles'); ?>
+</head>
+<body class="bg-stone-950 text-stone-100 font-sans">
+  <header class="header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="logo-circle">NSB</div>
+        <div>
+          <div class="brand-title">NESSABEAUTY <span class="badge">SUPER ADMIN</span></div>
+          <div class="brand-slogan">Alluring wig for the classy lady.</div>
+        </div>
+      </div>
+      <div class="user-bar">
+        <span>Logged in as: Founder Vanessa</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="main-content" style="max-width: 1200px; margin: 24px auto;">
+    <div class="card">
+      <h2 style="font-family:serif; color:#fef3c7; font-size:22px; margin-bottom:8px;">NSB Academy Administrative Master Console</h2>
+      <p style="font-size:12px; color:#a8a29e; margin-bottom:20px;">
+        Google Sheets 24-Table Architecture Active • Full Role-Based Permission Control
+      </p>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+        <div style="background:#0c0a09; padding:18px; border-radius:14px; border:1px solid #292524;">
+          <h3 style="font-size:14px; color:#fbbf24; font-weight:bold; margin-bottom:6px;">1. Candidate Admissions</h3>
+          <p style="font-size:12px; color:#a8a29e; margin-bottom:12px;">Review applications, verify uploaded ID documents, approve registrations, and authorize scholarship fee reductions.</p>
+          <button class="btn btn-secondary" onclick="alert('Viewing candidate registry in connected Google Sheet: Candidates tab')">Open Candidates Sheet</button>
+        </div>
+
+        <div style="background:#0c0a09; padding:18px; border-radius:14px; border:1px solid #292524;">
+          <h3 style="font-size:14px; color:#34d399; font-weight:bold; margin-bottom:6px;">2. Financial Bursary</h3>
+          <p style="font-size:12px; color:#a8a29e; margin-bottom:12px;">Confirm tuition deposits, process installment schedules, issue PDF receipts, and audit reversal movements.</p>
+          <button class="btn btn-secondary" onclick="alert('Opening Payments & Receipts Sheet')">Open Financials Sheet</button>
+        </div>
+
+        <div style="background:#0c0a09; padding:18px; border-radius:14px; border:1px solid #292524;">
+          <h3 style="font-size:14px; color:#f43f5e; font-weight:bold; margin-bottom:6px;">3. Academic Certification</h3>
+          <p style="font-size:12px; color:#a8a29e; margin-bottom:12px;">3-point audit verification: 80% minimum attendance, 70% passing score, and full fee settlement before issuing certificates.</p>
+          <button class="btn btn-secondary" onclick="alert('Opening Certificates Register')">View Certificate Records</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

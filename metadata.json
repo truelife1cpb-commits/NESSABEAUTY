@@ -1,0 +1,6 @@
+{
+  "name": "NESSABEAUTY (NSB) Management System",
+  "description": "Comprehensive Google Sheets & Google Apps Script management system for NESSABEAUTY — featuring admissions, multi-role portals, installment payments, receipt & certificate generation, attendance, grading, inventory, and accounting.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

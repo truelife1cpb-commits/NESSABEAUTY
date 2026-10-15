@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - NESSABEAUTY (NSB)</title>
+  <?!= include('Styles'); ?>
+</head>
+<body class="bg-stone-950 text-stone-100 font-sans p-6 flex items-center justify-center min-h-screen">
+  <div style="max-width: 420px; width: 100%;" class="card">
+    <div style="text-align: center; margin-bottom: 24px;">
+      <div class="logo-circle" style="margin: 0 auto 12px; width: 44px; height: 44px; font-size: 15px;">NSB</div>
+      <h1 style="font-family: serif; color: #fef3c7; font-size: 22px; font-weight: bold;">Staff & Student Portal</h1>
+      <p style="font-style: italic; color: #fbbf24; font-size: 11px;">"Alluring wig for the classy lady."</p>
+    </div>
+
+    <form id="login-form" onsubmit="doLogin(event)">
+      <div style="margin-bottom: 14px;">
+        <label style="font-size: 11px; color: #a8a29e; text-transform: uppercase; font-weight: 600;">Email Address</label>
+        <input type="email" id="login-email" required placeholder="admin@nessabeauty.com">
+      </div>
+
+      <div style="margin-bottom: 18px;">
+        <label style="font-size: 11px; color: #a8a29e; text-transform: uppercase; font-weight: 600;">Password</label>
+        <input type="password" id="login-pass" required placeholder="••••••••">
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; padding: 10px; font-size: 13px;">
+        Sign In Securely
+      </button>
+    </form>
+
+    <div id="login-msg" style="margin-top: 14px; font-size: 12px; text-align: center;"></div>
+  </div>
+
+  <script>
+    function doLogin(e) {
+      e.preventDefault();
+      var msg = document.getElementById('login-msg');
+      msg.innerHTML = '<span style="color:#fbbf24;">Authenticating credentials...</span>';
+
+      var email = document.getElementById('login-email').value;
+      var pass = document.getElementById('login-pass').value;
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res.success) {
+              msg.innerHTML = '<span style="color:#34d399;">Welcome ' + res.user.fullName + ' (' + res.user.role + ')</span>';
+              sessionStorage.setItem('nsb_token', res.sessionToken);
+              window.location.search = '?page=' + (res.user.role === 'student' ? 'student' : 'admin');
+            } else {
+              msg.innerHTML = '<span style="color:#f43f5e;">' + res.error + '</span>';
+            }
+          })
+          .authenticateUser(email, pass);
+      } else {
+        msg.innerHTML = '<span style="color:#34d399;">Demo Authenticated: Super Admin role active.</span>';
+      }
+    }
+  </script>
+</body>
+</html>

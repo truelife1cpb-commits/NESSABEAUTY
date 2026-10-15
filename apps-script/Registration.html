@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Public Candidate Registration - NESSABEAUTY (NSB)</title>
+  <?!= include('Styles'); ?>
+</head>
+<body class="bg-stone-950 text-stone-100 font-sans p-6">
+  <div style="max-w: 680px; margin: 0 auto;" class="card">
+    <div style="text-align: center; margin-bottom: 24px;">
+      <div class="logo-circle" style="margin: 0 auto 12px; width: 48px; height: 48px; font-size: 16px;">NSB</div>
+      <h1 style="font-family: serif; color: #fef3c7; font-size: 24px; font-weight: bold;">NESSABEAUTY (NSB)</h1>
+      <p style="font-style: italic; color: #fbbf24; font-size: 12px;">"Alluring wig for the classy lady."</p>
+      <p style="font-size: 11px; color: #a8a29e; margin-top: 4px;">January 15, 2027 – February 11, 2027 Beauty Cohort Admissions</p>
+    </div>
+
+    <form id="public-reg-form" onsubmit="submitForm(event)">
+      <div style="margin-bottom: 16px;">
+        <label style="font-size: 11px; color: #a8a29e; text-transform: uppercase; font-weight: 600;">1. Full Legal Name *</label>
+        <input type="text" id="fullName" required placeholder="e.g. Vanessa Diallo">
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+        <div>
+          <label style="font-size: 11px; color: #a8a29e; text-transform: uppercase; font-weight: 600;">2. Email Address *</label>
+          <input type="email" id="email" required placeholder="you@example.com">
+        </div>
+        <div>
+          <label style="font-size: 11px; color: #a8a29e; text-transform: uppercase; font-weight: 600;">3. Phone (WhatsApp) *</label>
+          <input type="tel" id="phone" required placeholder="+1 555 789 3245">
+        </div>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <label style="font-size: 11px; color: #a8a29e; text-transform: uppercase; font-weight: 600;">4. Course Specialization *</label>
+        <select id="courseId">
+          <option value="CRS-WIG-01">Professional Wig Installation & Frontal Customization ($150)</option>
+          <option value="CRS-HAIR-02">Advanced Bridal & Creative Hairstyling ($150)</option>
+          <option value="CRS-MKP-03">Master Makeup Artistry & Beauty Glamour ($150)</option>
+        </select>
+        <div style="font-size: 11px; color: #34d399; margin-top: 4px;">Standard Fee: $50 Registration + $100 Tuition = $150 USD total</div>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <label style="font-size: 11px; color: #a8a29e; text-transform: uppercase; font-weight: 600;">5. Residential Address *</label>
+        <input type="text" id="residentialAddress" required placeholder="Street address, City, State">
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+        <div>
+          <label style="font-size: 11px; color: #a8a29e; text-transform: uppercase; font-weight: 600;">Emergency Contact Name *</label>
+          <input type="text" id="emergencyContactName" required placeholder="Marcus Diallo">
+        </div>
+        <div>
+          <label style="font-size: 11px; color: #a8a29e; text-transform: uppercase; font-weight: 600;">Emergency Phone *</label>
+          <input type="tel" id="emergencyContactPhone" required placeholder="+1 555 998 1122">
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 14px;">
+        Submit Application & Enroll
+      </button>
+    </form>
+
+    <div id="status-box" style="margin-top: 16px; font-size: 13px; text-align: center;"></div>
+  </div>
+
+  <script>
+    function submitForm(e) {
+      e.preventDefault();
+      var box = document.getElementById('status-box');
+      box.innerHTML = '<span style="color:#fbbf24;">Recording application in NESSABEAUTY database...</span>';
+
+      var data = {
+        fullName: document.getElementById('fullName').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        courseId: document.getElementById('courseId').value,
+        residentialAddress: document.getElementById('residentialAddress').value,
+        emergencyContactName: document.getElementById('emergencyContactName').value,
+        emergencyContactPhone: document.getElementById('emergencyContactPhone').value
+      };
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res.success) {
+              box.innerHTML = '<div style="background:#064e3b; padding:16px; border-radius:12px; color:#34d399; font-weight:bold;">' +
+                'Application Received! Candidate ID: ' + res.candidateId + '<br>' +
+                'Registration Number: ' + res.registrationNumber + '<br>' +
+                'A confirmation email has been dispatched to ' + data.email + '</div>';
+              document.getElementById('public-reg-form').reset();
+            } else {
+              box.innerHTML = '<span style="color:#f43f5e; font-weight:bold;">' + res.error + '</span>';
+            }
+          })
+          .withFailureHandler(function(err) {
+            box.innerHTML = '<span style="color:#f43f5e;">Submission error: ' + err.toString() + '</span>';
+          })
+          .submitCandidateRegistration(data);
+      } else {
+        box.innerHTML = '<span style="color:#34d399;">Simulated submission successful (Candidate ID: NSB-CND-2027-005).</span>';
+      }
+    }
+  </script>
+</body>
+</html>
